@@ -37,20 +37,16 @@ internal class DepositProcessor(
             settings.BankCode);
 
         var depositResponse = await s88PayClient
-            .DepositAsync(settings.MerchantCode, settings.ApiKey, settings.SecretKey, order, cancellationToken)
-            .ConfigureAwait(false);
-
-        var transactionResponse = await s88PayClient
-            .QueryTransactionStatusAsync(settings.MerchantCode, settings.ApiKey, settings.SecretKey, settings.FormId, cancellationToken)
+            .DepositV3Async(settings.MerchantCode, settings.ApiKey, settings.SecretKey, order, cancellationToken)
             .ConfigureAwait(false);
 
         var applyInfo = new S88PayDepositApplyInfo(
             settings,
-            new S88PayDepositResponse(
+            new S88PayDepositV3Response(
                 depositResponse.Amount,
                 depositResponse.FormId,
-                depositResponse.RedirectHtml,
-                transactionResponse.ThirdPartyOrderNo));
+                depositResponse.RedirectUrl,
+                depositResponse.ThirdPartyOrderNo));
 
         return new DepositResponse
         {

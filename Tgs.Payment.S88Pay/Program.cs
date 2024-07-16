@@ -65,14 +65,10 @@ builder.Services
             ProcessorTypes.DepositProcessorType,
             "tgs.payment.s88pay.deposit",
             "tgs.payment.s88pay.deposit")
-        //.AddHandler(
-        //        ProcessorTypes.DepositTimeoutHandlerType,
-        //        "tgs.payment.s88pay.deposit.schedule.reject",
-        //        "tgs.payment.s88pay.deposit.schedule.reject")
-        //.AddProcessor(
-        //    ProcessorTypes.WithdrawProcessorType,
-        //    "tgs.payment.s88pay.withdraw",
-        //    "tgs.payment.s88pay.withdraw")
+        .AddProcessor(
+            ProcessorTypes.WithdrawProcessorType,
+            "tgs.payment.s88pay.withdraw",
+            "tgs.payment.s88pay.withdraw")
         .AddProcessor(
             ProcessorTypes.GetBalanceProcessorType,
             "tgs.payment.s88pay.balance",

@@ -58,10 +58,10 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "4ucmqplxb029",
                 "VND",
                 "momo"),
-             new S88PayDepositResponse(
+             new S88PayDepositV3Response(
                 10000m,
                 formId,
-                "<html></html>",
+                new Uri("data:image"),
                 "DP1721020967670"));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())
@@ -146,10 +146,10 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "4ucmqplxb029",
                 "VND",
                 "viettelpay"),
-             new S88PayDepositResponse(
+             new S88PayDepositV3Response(
                 10000m,
                 formId,
-                "<html></html>",
+                new Uri("data:image"),
                 "DP1721094099554"));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())

@@ -11,7 +11,56 @@ public class S88PayClient(
     TimeProvider timeProvider,
     ILogger<S88PayClient> logger)
 {
-    public async ValueTask<S88PayClientDepositResponse> DepositAsync(
+    public async ValueTask<S88PayClientDepositV3Response> DepositV3Async(
+       string merchantCode,
+       string apiKey,
+       string secretKey,
+       DepositOrder order,
+       CancellationToken cancellationToken = default)
+    {
+        var dict = new Dictionary<string, string?>
+        {
+            ["bank_code"] = order.BankCode,
+            ["callback_url"] = order.CallbackUrl.AbsoluteUri,
+            ["currency_code"] = order.CurrencyCode,
+            ["merchant_api_key"] = apiKey,
+            ["merchant_code"] = merchantCode,
+            ["payment_code"] = order.PaymentCode,
+            ["transaction_amount"] = order.Amount.ToString("#.##"),
+            ["transaction_code"] = order.FormId.ToString(),
+            ["transaction_timestamp"] = timeProvider.GetUtcNow().ToUnixTimeSeconds().ToString(),
+            ["user_id"] = order.PlayerCode,
+        };
+
+        var source = string.Join(
+            "&",
+            dict.Select(p => $"{p.Key}={p.Value}"));
+
+        var key = cryptor.AesEncrypt(source, apiKey, secretKey);
+
+        var response = await httpClient
+            .PostAsJsonAsync($"/api/{merchantCode}/v3/dopayment", new { key }, cancellationToken)
+            .ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+        var node = JsonNode.Parse(body) ?? throw new ApiFailException("DepositV3 response can't read.");
+
+        if (node["status"]!.GetValue<string>() != "success")
+            throw new ApiFailException(node["message"]!.GetValue<string>());
+
+        logger.LogInformation("S88PayClient DepositV3 Body:{body}", body);
+
+        return new S88PayClientDepositV3Response(
+            Amount: order.Amount,
+            FormId: order.FormId,
+            ThirdPartyOrderNo: node["transaction_no"]!.GetValue<string>(),
+            RedirectUrl: new Uri(node["wallet_qr"]!.GetValue<string>()));
+    }
+
+    public async ValueTask<S88PayClientDepositV2Response> DepositV2Async(
         string merchantCode,
         string apiKey,
         string secretKey,
@@ -30,7 +79,7 @@ public class S88PayClient(
             ["transaction_code"] = order.FormId.ToString(),
             ["transaction_timestamp"] = timeProvider.GetUtcNow().ToUnixTimeSeconds().ToString(),
             ["user_id"] = order.PlayerCode,
-        };        
+        };
 
         var source = string.Join(
             "&",
@@ -42,14 +91,16 @@ public class S88PayClient(
             .GetAsync($"/{merchantCode}/v2/dopayment?key={key}", cancellationToken)
             .ConfigureAwait(false);
 
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        var body = await response.Content
+            .ReadAsStringAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         if (response.StatusCode is System.Net.HttpStatusCode.BadRequest)
             throw new ApiFailException($"{body}");
 
         logger.LogInformation("S88PayClient Deposit Body:{body}", body);
 
-        return new S88PayClientDepositResponse(
+        return new S88PayClientDepositV2Response(
             Amount: order.Amount,
             FormId: order.FormId,
             RedirectHtml: body);

@@ -43,7 +43,7 @@ var secretKey = "secretKey";
 //acbbank
 //mbbank
 
-/*
+
 var amount = 50000m;
 
 var httpClient = new HttpClient
@@ -64,15 +64,15 @@ var depositOrder = new DepositOrder(
     PaymentCode: "PaymentCode",
     "4ucmqplxb029",
     "VND",
-    "viettelpay");
+    "momo");
 
-var depositreturn = await client.DepositAsync(merchantCode, apiKey, secretKey, depositOrder);
+var depositreturn = await client.DepositV3Async(merchantCode, apiKey, secretKey, depositOrder);
 logger.LogInformation($"deposit return: {depositreturn}");
-*/
+
 
 
 //交易查詢 (Transaction status)
-
+/*
 var formId = Guid.Parse("8ad0350a-4f16-463d-bffc-8d2ebf6c3a72");
 var httpClient = new HttpClient
 {
@@ -86,7 +86,7 @@ var client = new S88PayClient(
 
 var transactionStatusQuery = await client.QueryTransactionStatusAsync(merchantCode, apiKey, secretKey, formId);
 logger.LogInformation("{transactionStatusQuery}", transactionStatusQuery);
-
+*/
 
 //代付 (Payout Request)
 /*
