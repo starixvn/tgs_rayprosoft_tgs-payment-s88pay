@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<RootNamespace>Tgs.Payment.S88Pay.Client</RootNamespace>
+	<Version>0.0.1</Version>
+	<Authors>Raypro</Authors>
+	<Company>Raypro</Company>
+	<PackageId>Tgs.Payment.S88Pay.Client</PackageId>
+	<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-payment-s88pay</PackageProjectUrl>
+	<RepositoryUrl>https://gitlab.com/rayprosoft/tgs-payment-s88pay</RepositoryUrl>
+	<PackageTags>Tgs Payment S88Pay</PackageTags>
+  </PropertyGroup>
+
+</Project>
