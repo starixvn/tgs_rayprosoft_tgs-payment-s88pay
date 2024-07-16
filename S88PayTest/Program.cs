@@ -61,7 +61,7 @@ var depositOrder = new DepositOrder(
     amount,
     Guid.NewGuid(),
     new Uri("https://dev-payment.rpgp.cc/s88pay"),
-    PaymentCode: "VND01D",
+    PaymentCode: "PaymentCode",
     "4ucmqplxb029",
     "VND",
     "viettelpay");
@@ -107,7 +107,7 @@ var withdrawOrder = new WithdrawOrder(
     Guid.NewGuid(),
     amount,
     new Uri("https://dev-payment.rpgp.cc/s88pay"),
-    PayoutCode: "VND01W",
+    PayoutCode: "PayoutCode",
     "4ucmqplxb029",
     "VND",
     "112233445566",
