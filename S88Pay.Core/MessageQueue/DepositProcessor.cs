@@ -20,9 +20,7 @@ internal class DepositProcessor(
         DepositRequest data,
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
-    {
-        logger.LogInformation("{DepositApplyInfo}", data.ApplyInfo);
-
+    {        
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
             S88PayUtility.SerializerOptions)!;
