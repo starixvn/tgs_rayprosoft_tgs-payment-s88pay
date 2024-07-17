@@ -43,7 +43,7 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "transaction_no": "DP1721020967670",
                 "user_id": "4ucmqplxb029",
                 "note": "others"
-            }            
+            }
             """;
 
         var content = new StringContent(request, Encoding.UTF8, new MediaTypeHeaderValue(MediaTypeNames.Application.Json));
@@ -57,12 +57,17 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "paymentCode",
                 "4ucmqplxb029",
                 "VND",
+                S88PayDepositType.EWallet,
                 "momo"),
              new S88PayDepositV3Response(
                 10000m,
                 formId,
                 new Uri("data:image"),
-                "DP1721020967670"));
+                "DP1721020967670",
+                DateTimeOffset.ParseExact("2024-07-15 14:37:06 GMT+07:00", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
+                "",
+                "",
+                null));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())
             .Returns(new DepositFormInfo
@@ -145,12 +150,17 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "paymentCode",
                 "4ucmqplxb029",
                 "VND",
+                S88PayDepositType.EWallet,
                 "viettelpay"),
              new S88PayDepositV3Response(
                 10000m,
                 formId,
                 new Uri("data:image"),
-                "DP1721094099554"));
+                "DP1721094099554",
+                DateTimeOffset.ParseExact("2024-07-16 09:57:10 GMT+07:00", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
+                "",
+                "",
+                null));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())
             .Returns(new DepositFormInfo
@@ -187,7 +197,7 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
         _ = fakePaymentClient.Received(1)
             .RejectDepositAsync(
                 Arg.Is(formId),
-                Arg.Is(brandId),                
+                Arg.Is(brandId),
                 Arg.Any<CancellationToken>());
     }
 }
