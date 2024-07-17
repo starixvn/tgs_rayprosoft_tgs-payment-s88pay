@@ -3,4 +3,9 @@ public record S88PayClientDepositV3Response(
     decimal Amount,
     Guid FormId,
     string ThirdPartyOrderNo,
-    Uri RedirectUrl);
+    string QR,
+    string ExpiredAt,
+    string ExpiredTimeZone,
+    string Number,
+    string Name,
+    string? BankName);

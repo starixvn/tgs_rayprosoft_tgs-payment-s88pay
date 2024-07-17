@@ -64,6 +64,7 @@ var depositOrder = new DepositOrder(
     PaymentCode: "PaymentCode",
     "4ucmqplxb029",
     "VND",
+    S88PayDepositType.EWallet,
     "momo");
 
 var depositreturn = await client.DepositV3Async(merchantCode, apiKey, secretKey, depositOrder);

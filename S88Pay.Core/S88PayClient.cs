@@ -55,11 +55,40 @@ public class S88PayClient(
 
         logger.LogInformation("S88PayClient DepositV3 Body:{body}", body);
 
+        var qr = order.Type switch
+        {
+            Client.S88PayDepositType.EWallet => node["wallet_qr"]!.GetValue<string>(),
+            Client.S88PayDepositType.Bank => node["account_qr"]!.GetValue<string>(),
+            Client.S88PayDepositType.None => throw new NotImplementedException(),
+            _ => throw new NotImplementedException()
+        };
+
+        var number = order.Type switch
+        {
+            Client.S88PayDepositType.EWallet => node["wallet_number"]!.GetValue<string>(),
+            Client.S88PayDepositType.Bank => node["account_number"]!.GetValue<string>(),
+            Client.S88PayDepositType.None => throw new NotImplementedException(),
+            _ => throw new NotImplementedException()
+        };
+
+        var name = order.Type switch
+        {
+            Client.S88PayDepositType.EWallet => node["wallet_name"]!.GetValue<string>(),
+            Client.S88PayDepositType.Bank => node["account_name"]!.GetValue<string>(),
+            Client.S88PayDepositType.None => throw new NotImplementedException(),
+            _ => throw new NotImplementedException()
+        };
+
         return new S88PayClientDepositV3Response(
-            Amount: order.Amount,
-            FormId: order.FormId,
+            Amount: decimal.Parse(node["amount"]!.GetValue<string>()),
+            FormId: Guid.Parse(node["transaction_code"]!.GetValue<string>()),
             ThirdPartyOrderNo: node["transaction_no"]!.GetValue<string>(),
-            RedirectUrl: new Uri(node["wallet_qr"]!.GetValue<string>()));
+            QR: qr,
+            ExpiredAt: node["expired_at"]!.GetValue<string>(),
+            ExpiredTimeZone: node["expired_timezone"]!.GetValue<string>(),
+            Number: number,
+            Name: name,
+            BankName: node["bank_name"]?.GetValue<string>());
     }
 
     public async ValueTask<S88PayClientDepositV2Response> DepositV2Async(
@@ -148,9 +177,9 @@ public class S88PayClient(
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-        logger.LogInformation("S88PayClient Withdraw response Body:{body}", body);
+        logger.LogInformation("S88PayClient Withdraw Response Body:{body}", body);
 
-        var node = JsonNode.Parse(body) ?? throw new ApiFailException("Withdraw response can't read.");
+        var node = JsonNode.Parse(body) ?? throw new ApiFailException("Withdraw Response can't read.");
 
         if (node["success"]!.GetValue<bool>() != true)
             throw new ApiFailException(node["message"]!.GetValue<string>());

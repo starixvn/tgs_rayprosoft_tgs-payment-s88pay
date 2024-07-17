@@ -60,6 +60,10 @@ deploy-dev:
   environment:
     name: dev
   stage: deploy-dev
+  tags:
+    - dev
+    - kubernetes
+    - deploy
   needs:
     - push-nuget
     - push-docker-image
@@ -77,6 +81,10 @@ deploy-staging:
   environment:
     name: staging
   stage: deploy-staging
+  tags:
+    - staging
+    - kubernetes
+    - deploy
   needs:
     - deploy-dev
     - job: push-k8s-template
@@ -93,6 +101,10 @@ deploy-prod:
   environment:
     name: prod
   stage: deploy-prod
+  tags:
+    - prod
+    - kubernetes
+    - deploy
   needs:
     - deploy-staging
     - job: push-k8s-template

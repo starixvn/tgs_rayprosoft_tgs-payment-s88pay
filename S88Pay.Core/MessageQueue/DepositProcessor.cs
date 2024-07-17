@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.Payment.Protos;
 using Tgs.Payment.S88Pay.Client;
@@ -9,8 +8,7 @@ namespace Tgs.Payment.S88Pay.MessageQueue;
 
 internal class DepositProcessor(
     S88PayClient s88PayClient,
-    IOptions<S88PayOptions> optionsAccessor,
-    ILogger<DepositProcessor> logger)
+    IOptions<S88PayOptions> optionsAccessor)
     : IMessageProcessor<DepositRequest, DepositResponse>
 {
     private readonly S88PayOptions _options = optionsAccessor.Value;
@@ -20,7 +18,7 @@ internal class DepositProcessor(
         DepositRequest data,
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
-    {        
+    {
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
             S88PayUtility.SerializerOptions)!;
@@ -32,6 +30,7 @@ internal class DepositProcessor(
             settings.PaymentCode,
             settings.PlayerCode,
             settings.CurrencyCode,
+            settings.Type,
             settings.BankCode);
 
         var depositResponse = await s88PayClient
@@ -43,8 +42,12 @@ internal class DepositProcessor(
             new S88PayDepositV3Response(
                 depositResponse.Amount,
                 depositResponse.FormId,
-                depositResponse.RedirectUrl,
-                depositResponse.ThirdPartyOrderNo));
+                new Uri(depositResponse.QR),
+                depositResponse.ThirdPartyOrderNo,
+                DateTimeOffset.ParseExact($"{depositResponse.ExpiredAt} {depositResponse.ExpiredTimeZone}", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
+                depositResponse.Number,
+                depositResponse.Name,
+                depositResponse.BankName));
 
         return new DepositResponse
         {
