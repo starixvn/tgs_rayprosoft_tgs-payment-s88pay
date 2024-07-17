@@ -47,7 +47,8 @@ public class DepositProcessorTests
 
         var sut = new DepositProcessor(
             fakePayClient,
-            new OptionsWrapper<S88PayOptions>(options));
+            new OptionsWrapper<S88PayOptions>(options),
+            NullLogger<DepositProcessor>.Instance);
 
         var applySettings = new S88PayDepositSettings(
             merchantCode,

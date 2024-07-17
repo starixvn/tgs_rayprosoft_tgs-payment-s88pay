@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.Payment.Protos;
 using Tgs.Payment.S88Pay.Client;
@@ -8,7 +9,8 @@ namespace Tgs.Payment.S88Pay.MessageQueue;
 
 internal class DepositProcessor(
     S88PayClient s88PayClient,
-    IOptions<S88PayOptions> optionsAccessor)
+    IOptions<S88PayOptions> optionsAccessor,
+    ILogger<DepositProcessor> logger)
     : IMessageProcessor<DepositRequest, DepositResponse>
 {
     private readonly S88PayOptions _options = optionsAccessor.Value;
@@ -22,6 +24,8 @@ internal class DepositProcessor(
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
             S88PayUtility.SerializerOptions)!;
+
+        logger.LogInformation("settings Type:{Type}", settings.Type);
 
         var order = new DepositOrder(
             decimal.Parse(data.Amount),
