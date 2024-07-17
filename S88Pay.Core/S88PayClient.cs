@@ -36,6 +36,8 @@ public class S88PayClient(
             "&",
             dict.Select(p => $"{p.Key}={p.Value}"));
 
+        logger.LogInformation("DepositV3 Request source:{source}", source);
+
         var key = cryptor.AesEncrypt(source, apiKey, secretKey);
 
         var response = await httpClient
@@ -130,6 +132,8 @@ public class S88PayClient(
         };
 
         var source = JsonSerializer.Serialize(dict);
+
+        logger.LogInformation("Withdraw Request source:{source}", source);
 
         var key = cryptor.AesEncrypt(source, apiKey, secretKey);
 
