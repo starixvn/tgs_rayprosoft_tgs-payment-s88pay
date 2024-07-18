@@ -4,7 +4,8 @@ public record S88PayDepositV3Response(
     Guid FormId,
     Uri RedirectUrl,
     string ThirdPartyOrderNo,
-    DateTimeOffset ExpiredAt,    
+    DateTimeOffset ExpiredAt,
     string Number,
     string Name,
+    string MatchCode,
     string? BankName);

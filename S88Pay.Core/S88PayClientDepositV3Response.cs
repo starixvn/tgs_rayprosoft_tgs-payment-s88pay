@@ -8,4 +8,5 @@ public record S88PayClientDepositV3Response(
     string ExpiredTimeZone,
     string Number,
     string Name,
+    string MatchCode,
     string? BankName);

@@ -104,6 +104,7 @@ public class DepositProcessorTests
                 DateTimeOffset.ParseExact("2024-07-16 14:24:35 GMT+07:00", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
                 "0934378391",
                 "NGUYEN VIET HUYNH",
+                "232168",
                 null),
             applyInfo.Response);
     }
