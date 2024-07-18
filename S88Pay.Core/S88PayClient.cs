@@ -88,6 +88,7 @@ public class S88PayClient(
             ExpiredTimeZone: node["expired_timezone"]!.GetValue<string>(),
             Number: number,
             Name: name,
+            MatchCode: node["match_code"]!.GetValue<string>(),
             BankName: node["bank_name"]?.GetValue<string>());
     }
 

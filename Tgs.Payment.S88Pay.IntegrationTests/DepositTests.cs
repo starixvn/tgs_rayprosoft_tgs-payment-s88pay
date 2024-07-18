@@ -67,6 +67,7 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 DateTimeOffset.ParseExact("2024-07-15 14:37:06 GMT+07:00", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
                 "",
                 "",
+                "",
                 null));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())
@@ -158,6 +159,7 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 new Uri("data:image"),
                 "DP1721094099554",
                 DateTimeOffset.ParseExact("2024-07-16 09:57:10 GMT+07:00", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
+                "",
                 "",
                 "",
                 null));

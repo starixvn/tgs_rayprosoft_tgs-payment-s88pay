@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Tgs.Payment.Clients;
 using Tgs.Payment.Protos;
 using Tgs.Payment.S88Pay.Client;
 using Valhalla.MessageQueue;
@@ -51,6 +52,7 @@ internal class DepositProcessor(
                 DateTimeOffset.ParseExact($"{depositResponse.ExpiredAt} {depositResponse.ExpiredTimeZone}", "yyyy-MM-dd HH:mm:ss 'GMT'K", null),
                 depositResponse.Number,
                 depositResponse.Name,
+                depositResponse.MatchCode,
                 depositResponse.BankName));
 
         return new DepositResponse
