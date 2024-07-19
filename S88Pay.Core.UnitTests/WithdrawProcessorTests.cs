@@ -58,7 +58,8 @@ public class WithdrawProcessorTests
             "112233445566",
             "testAccountName",
             "bankCode",
-            "bankName");
+            "bankName",
+            1m);
 
         var request = new WithdrawRequest
         {

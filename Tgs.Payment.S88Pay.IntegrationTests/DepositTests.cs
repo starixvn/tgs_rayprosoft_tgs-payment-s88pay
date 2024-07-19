@@ -58,7 +58,8 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "4ucmqplxb029",
                 "VND",
                 S88PayDepositType.EWallet,
-                "momo"),
+                "momo",
+                1m),
              new S88PayDepositV3Response(
                 10000m,
                 formId,
@@ -152,7 +153,8 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "4ucmqplxb029",
                 "VND",
                 S88PayDepositType.EWallet,
-                "viettelpay"),
+                "viettelpay",
+                1m),
              new S88PayDepositV3Response(
                 10000m,
                 formId,

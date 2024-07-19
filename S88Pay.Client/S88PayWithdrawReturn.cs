@@ -16,4 +16,6 @@ public record S88PayWithdrawReturn
     public string? TransactionReference { get; init; }
 
     public string? TransactionReference2 { get; init; }
+
+    public decimal AfterExchangeOrderAmount { get; set; }
 }

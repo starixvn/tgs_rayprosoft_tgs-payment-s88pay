@@ -20,11 +20,10 @@ public class WithdrawController(ILogger<WithdrawController> logger) : Controller
         [FromServices] IPaymentClient paymentClient,
         [FromBody] CallbackWithdrawViewModel source)
     {
-        
         logger.LogInformation("{source}", source);
 
         var formId = Guid.Parse(source.TransactionCode);
-        
+
         var withdrawForm = await getService
             .GetAsync(new(formId), HttpContext.RequestAborted)
             .ConfigureAwait(false);
@@ -35,25 +34,28 @@ public class WithdrawController(ILogger<WithdrawController> logger) : Controller
             return "fail";
         }
         var apiKey = withdrawForm.ApplyInfo!.Settings.ApiKey;
-        var secretKey = withdrawForm.ApplyInfo!.Settings.SecretKey;                
+        var secretKey = withdrawForm.ApplyInfo!.Settings.SecretKey;
+        var exchangeRate = withdrawForm.ApplyInfo.Settings.ExchangeRate;
 
-        
         var decryptString = cryptor.AesDecrypt(source.Key, apiKey, secretKey);
 
         var keyModel = JsonSerializer.Deserialize<WithdrawKeyViewModel>(decryptString)!;
 
+        var orderAmount = decimal.Parse(keyModel.TransactionAmount);
+
         var paymentReturn = new S88PayWithdrawReturn()
         {
             FormId = formId,
-            OrderAmount = decimal.Parse(keyModel.TransactionAmount),
+            OrderAmount = orderAmount,
             Status = keyModel.TransactionStatus.ToString(),
             ThirdPartyOrderNo = keyModel.TransactionNo,
             CurrencyCode = keyModel.CurrencyCode,
             TransactionFee = decimal.Parse(keyModel.TransactionFee),
             TransactionReference = keyModel.TransactionReference,
             TransactionReference2 = keyModel.TransactionReference2,
+            AfterExchangeOrderAmount = orderAmount / exchangeRate,
         };
-        
+
         var fsm = PaymentStateMachineFactory.CreateWithdrawStateMachine(withdrawForm.Status);
 
         switch (paymentReturn.Status)
@@ -93,7 +95,7 @@ public class WithdrawController(ILogger<WithdrawController> logger) : Controller
 
                 break;
         }
-        
+
         return "success";
     }
 }

@@ -48,7 +48,8 @@ public class WithdrawTests(ITestOutputHelper testOutputHelper)
             "112233445566",
             "testAccountName",
             "970416",
-            "NGAN HANG TMCP A CHAU (ACB)");
+            "NGAN HANG TMCP A CHAU (ACB)",
+            1m);
         var withdrawResponse = new S88PayWithdrawResponse(formId, "WD1721032886957");
 
         var applyInfo = new S88PayWithdrawApplyInfo(settings, withdrawResponse);
@@ -90,6 +91,7 @@ public class WithdrawTests(ITestOutputHelper testOutputHelper)
             TransactionFee = decimal.Parse("70.00000000"),
             TransactionReference = "override",
             TransactionReference2 = null,
+            AfterExchangeOrderAmount = 10000.00000000m
         };
 
         Assert.Equal("success", actual);
@@ -137,7 +139,8 @@ public class WithdrawTests(ITestOutputHelper testOutputHelper)
             "112233445566",
             "testAccountName",
             "970416",
-            "NGAN HANG TMCP A CHAU (ACB)");
+            "NGAN HANG TMCP A CHAU (ACB)",
+            1m);
         var withdrawResponse = new S88PayWithdrawResponse(formId, "WD1721097231551");
 
         var applyInfo = new S88PayWithdrawApplyInfo(settings, withdrawResponse);
@@ -179,6 +182,7 @@ public class WithdrawTests(ITestOutputHelper testOutputHelper)
             TransactionFee = decimal.Parse("70.00000000"),
             TransactionReference = null,
             TransactionReference2 = null,
+            AfterExchangeOrderAmount = 10000.00000000m
         };
 
         Assert.Equal("success", actual);

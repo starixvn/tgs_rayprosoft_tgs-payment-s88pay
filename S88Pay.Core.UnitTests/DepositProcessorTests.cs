@@ -59,7 +59,8 @@ public class DepositProcessorTests
             "4ucmqplxb029",
             "VND",
             S88PayDepositType.EWallet,
-            "viettelpay");
+            "viettelpay",
+            1m);
 
         var request = new DepositRequest
         {
