@@ -106,6 +106,7 @@ public class DepositProcessorTests
                 "0934378391",
                 "NGUYEN VIET HUYNH",
                 "232168",
+                S88PayDepositType.EWallet,
                 null),
             applyInfo.Response);
     }

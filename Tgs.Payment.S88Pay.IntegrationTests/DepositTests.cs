@@ -69,6 +69,7 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "",
                 "",
                 "",
+                S88PayDepositType.EWallet,
                 null));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())
@@ -164,6 +165,7 @@ public class DepositTests(ITestOutputHelper testOutputHelper)
                 "",
                 "",
                 "",
+                S88PayDepositType.EWallet,
                 null));
 
         _ = fakePaymentServiceClient.GetDepositFormAsync(Arg.Is(formId), Arg.Any<CancellationToken>())

@@ -8,4 +8,5 @@ public record S88PayDepositV3Response(
     string Number,
     string Name,
     string MatchCode,
+    S88PayDepositType Type,
     string? BankName);
