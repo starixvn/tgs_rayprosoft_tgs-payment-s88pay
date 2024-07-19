@@ -11,4 +11,6 @@ public record S88PayDepositSettings(
     string CurrencyCode,
     [property: Description("內部使用，因應不同BankCode回傳")]
     S88PayDepositType Type,
-    string? BankCode);
+    string? BankCode,
+    [property: Description("匯率轉換")]
+    decimal ExchangeRate);

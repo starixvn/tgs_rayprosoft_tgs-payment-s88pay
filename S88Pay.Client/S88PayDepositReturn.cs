@@ -13,4 +13,8 @@ public record S88PayDepositReturn
     public decimal? TransferFee { get; init; }
 
     public string CurrencyCode { get; init; } = default!;
+
+    public decimal AfterExchangeOrderAmount { get; set; }
+
+    public decimal AfterExchangeRealAmount { get; init; }
 }

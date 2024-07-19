@@ -1,4 +1,6 @@
-﻿namespace Tgs.Payment.S88Pay.Client;
+﻿using System.ComponentModel;
+
+namespace Tgs.Payment.S88Pay.Client;
 public record S88PayWithdrawSettings(
     string MerchantCode,
     string ApiKey,
@@ -10,4 +12,6 @@ public record S88PayWithdrawSettings(
     string BankAccountNumber,
     string AccountName,
     string BankCode,
-    string BankName);
+    string BankName,
+    [property: Description("匯率轉換")]
+    decimal ExchangeRate);

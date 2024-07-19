@@ -36,6 +36,7 @@ public class DepositController(ILogger<DepositController> logger) : ControllerBa
 
         var apiKey = depositForm.ApplyInfo!.Settings.ApiKey;
         var secretKey = depositForm.ApplyInfo!.Settings.SecretKey;
+        var exchangeRate = depositForm.ApplyInfo.Settings.ExchangeRate;
 
         var decryptString = cryptor.AesDecrypt(source.Key, apiKey, secretKey);
 
@@ -49,17 +50,22 @@ public class DepositController(ILogger<DepositController> logger) : ControllerBa
             dict[kv[0]] = kv[1];
         }
 
+        var orderAmount = decimal.Parse(dict["transaction_amount"]);
+        var realAmount = decimal.Parse(dict["transaction_actual_amount"]);
+
         var paymentReturn = new S88PayDepositReturn
         {
-            OrderAmount = decimal.Parse(dict["transaction_amount"]),
+            OrderAmount = orderAmount,
             FormId = formId,
             Status = dict["transaction_status"],
             ThirdPartyOrderNo = dict["transaction_no"],
             CurrencyCode = dict["currency_code"],
-            RealAmount = decimal.Parse(dict["transaction_actual_amount"]),
+            RealAmount = realAmount,
             TransferFee = string.IsNullOrEmpty(dict["transaction_fee"])
                 ? null
                 : decimal.Parse(dict["transaction_fee"]),
+            AfterExchangeRealAmount = realAmount / exchangeRate,
+            AfterExchangeOrderAmount = orderAmount / exchangeRate
         };
 
         var fsm = PaymentStateMachineFactory.CreateDepositStateMachine(depositForm.Status);
@@ -79,7 +85,7 @@ public class DepositController(ILogger<DepositController> logger) : ControllerBa
                     await paymentClient.ApproveDepositAsync(
                         depositForm.Id,
                         depositForm.BrandId,
-                        paymentReturn.OrderAmount,
+                        paymentReturn.AfterExchangeOrderAmount,
                         HttpContext.RequestAborted).ConfigureAwait(false);
                 }
 
