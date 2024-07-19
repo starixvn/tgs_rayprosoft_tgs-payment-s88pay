@@ -91,6 +91,7 @@ public class WithdrawTests(ITestOutputHelper testOutputHelper)
             TransactionFee = decimal.Parse("70.00000000"),
             TransactionReference = "override",
             TransactionReference2 = null,
+            AfterExchangeOrderAmount = 10000.00000000m
         };
 
         Assert.Equal("success", actual);
@@ -181,6 +182,7 @@ public class WithdrawTests(ITestOutputHelper testOutputHelper)
             TransactionFee = decimal.Parse("70.00000000"),
             TransactionReference = null,
             TransactionReference2 = null,
+            AfterExchangeOrderAmount = 10000.00000000m
         };
 
         Assert.Equal("success", actual);
