@@ -11,7 +11,6 @@ using Tgs.Payment.S88Pay;
 using Tgs.Payment.S88Pay.MessageQueue;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Logging
     .AddOpenTelemetry(options =>
     {
@@ -111,7 +110,7 @@ builder.Services
                 ext => httpContext.Request.Path.Value.EndsWith($".{ext}")));
 
 var app = builder.Build();
-
+app.UsePathBase($"/{builder.Configuration.GetValue<string>("PathBase")}");
 app.UseHttpLogging();
 app.MapControllers();
 app.MapHealthChecks("/healthz");
