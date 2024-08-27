@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.Payment.Clients;
 using Tgs.Payment.Protos;
@@ -10,7 +11,8 @@ namespace Tgs.Payment.S88Pay.MessageQueue;
 internal class WithdrawProcessor(
     S88PayClient s88PayClient,
     IOptions<S88PayOptions> optionsAccessor,
-    IPaymentClient paymentClient)
+    IPaymentClient paymentClient,
+    ILogger<WithdrawProcessor> logger)
     : IMessageProcessor<WithdrawRequest, WithdrawResponse>
 {
     private readonly S88PayOptions _options = optionsAccessor.Value;
@@ -21,6 +23,7 @@ internal class WithdrawProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
+        logger.LogInformation("Handle Withdraw: {info}", data.ApplyInfo);
         var settings = JsonSerializer.Deserialize<S88PayWithdrawSettings>(data.ApplyInfo, S88PayUtility.SerializerOptions)!;
 
         var order = new WithdrawOrder(
