@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.Payment.Clients;
@@ -29,7 +30,7 @@ internal class WithdrawProcessor(
         var order = new WithdrawOrder(
             settings.FormId,
             decimal.Parse(data.Amount) * settings.ExchangeRate,
-            new Uri($"{_options.CallbackBaseUrl}/withdraw/callback"),
+            new Uri(_options.CallbackBaseUrl,"/withdraw/callback"),
             settings.PayoutCode,
             settings.PlayerCode,
             settings.CurrencyCode,
