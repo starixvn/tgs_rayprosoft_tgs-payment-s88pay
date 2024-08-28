@@ -26,7 +26,10 @@ builder.Logging
                 () => Environment.MachineName));
         });
     })
-    .AddSentry();
+    .AddSentry((option) =>
+    {
+        builder.Configuration.GetSection("Sentry").Bind(option);
+    });
 
 builder.Services
     .AddControllers();
