@@ -25,7 +25,8 @@ builder.Logging
                 "MachineName",
                 () => Environment.MachineName));
         });
-    });
+    })
+    .AddSentry();
 
 builder.Services
     .AddControllers();
@@ -130,5 +131,5 @@ app.Use(async (context, next) =>
         _ = await stream.ReadToEndAsync().ConfigureAwait(false);
     }
 });
-
+SentrySdk.CaptureMessage($"Started result Tgs-S88Pay at {DateTime.Now.ToString()}");
 app.Run();
