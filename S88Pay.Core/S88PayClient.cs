@@ -41,7 +41,7 @@ public class S88PayClient(
         var key = cryptor.AesEncrypt(source, apiKey, secretKey);
 
         var response = await httpClient
-            .PostAsJsonAsync($"/api/{merchantCode}/v3/dopayment", new { key }, cancellationToken)
+            .PostAsJsonAsync($"api/{merchantCode}/v3/dopayment", new { key }, cancellationToken)
             .ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
@@ -120,7 +120,7 @@ public class S88PayClient(
         var key = cryptor.AesEncrypt(source, apiKey, secretKey);
 
         var response = await httpClient
-            .GetAsync($"/{merchantCode}/v2/dopayment?key={key}", cancellationToken)
+            .GetAsync($"{merchantCode}/v2/dopayment?key={key}", cancellationToken)
             .ConfigureAwait(false);
 
         var body = await response.Content
@@ -173,7 +173,7 @@ public class S88PayClient(
         };
 
         var response = await httpClient
-            .PostAsJsonAsync($"/api/v1/payout/{merchantCode}", request, cancellationToken)
+            .PostAsJsonAsync($"api/v1/payout/{merchantCode}", request, cancellationToken)
             .ConfigureAwait(false);
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -215,7 +215,7 @@ public class S88PayClient(
         };
 
         var response = await httpClient
-            .PostAsJsonAsync($"/api/v1/{merchantCode}/transactions/status", request, cancellationToken)
+            .PostAsJsonAsync($"api/v1/{merchantCode}/transactions/status", request, cancellationToken)
             .ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
@@ -258,7 +258,7 @@ public class S88PayClient(
         };
 
         var response = await httpClient
-            .PostAsJsonAsync($"/api/v1/balance/{merchantCode}", request, cancellationToken)
+            .PostAsJsonAsync($"api/v1/balance/{merchantCode}", request, cancellationToken)
             .ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
