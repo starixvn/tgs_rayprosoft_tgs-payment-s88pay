@@ -22,9 +22,7 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity("InternalHandlerSession");
-        _ = (activity?.SetParentId(Activity.Current?.ParentId!));
-        _ = activity?.Start();
+        logger.LogInformation("{ParentId}", Activity.Current?.ParentId);
 
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
