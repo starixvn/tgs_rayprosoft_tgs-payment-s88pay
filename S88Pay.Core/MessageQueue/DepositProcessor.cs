@@ -22,7 +22,10 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Nats headerValues:{headerValues}", headerValues);
+        if (headerValues == null)
+        {
+            logger.LogInformation("Nats headerValues:{headerValues}", headerValues);
+        }
         logger.LogInformation("Nats ParentId:{ParentId}", Activity.Current?.ParentId);
         _ = (Activity.Current?.AddTag("mq", "NATS"))
             .AddTag("handler", typeof(DepositProcessor).Name);
