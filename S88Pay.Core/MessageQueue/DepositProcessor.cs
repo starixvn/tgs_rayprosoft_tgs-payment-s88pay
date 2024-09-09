@@ -28,6 +28,7 @@ internal class DepositProcessor(
             var traceId = ActivityTraceId.CreateFromString(headerValues!.First(x => x.Name == "traceId").Value.AsSpan());
             var spanId = ActivitySpanId.CreateFromString(headerValues!.First(x => x.Name == "spanId").Value.AsSpan());
             _ = (activity?.SetParentId(traceId, spanId));
+            _ = activity?.Start();
         }
 
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
