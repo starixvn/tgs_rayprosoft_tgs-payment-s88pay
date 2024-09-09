@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ public class S88PayClient(
        DepositOrder order,
        CancellationToken cancellationToken = default)
     {
+        using var activity = new ActivitySource("System.Net.Http").StartActivity("POST");
         var dict = new Dictionary<string, string?>
         {
             ["bank_code"] = order.BankCode,
