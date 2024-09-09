@@ -22,7 +22,7 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        using var activity = new Activity("InternalHandlerSession").Start();
+        _ = (Activity.Current?.AddTag("mq", "NATS"));
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
             S88PayUtility.SerializerOptions)!;

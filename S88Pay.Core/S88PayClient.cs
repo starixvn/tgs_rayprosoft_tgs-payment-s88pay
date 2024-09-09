@@ -18,8 +18,7 @@ public class S88PayClient(
        string secretKey,
        DepositOrder order,
        CancellationToken cancellationToken = default)
-    {
-        using var activity = new Activity("POST").Start();
+    {        
         var dict = new Dictionary<string, string?>
         {
             ["bank_code"] = order.BankCode,
