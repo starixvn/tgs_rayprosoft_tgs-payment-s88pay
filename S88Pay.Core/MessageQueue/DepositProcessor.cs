@@ -22,13 +22,10 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        if (headerValues == null)
-        {
-            logger.LogInformation("Nats headerValues:{headerValues}", headerValues);
-        }
+        logger.LogInformation("Nats headerValues:{headerValues}", headerValues);        
         logger.LogInformation("Nats ParentId:{ParentId}", Activity.Current?.ParentId);
         _ = (Activity.Current?.AddTag("mq", "NATS"))
-            .AddTag("handler", typeof(DepositProcessor).Name);
+            .AddTag("handler", "DepositProcessor");
 
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
