@@ -23,9 +23,7 @@ internal class DepositProcessor(
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Nats headerValues:{headerValues}", headerValues);        
-        logger.LogInformation("Nats ParentId:{ParentId}", Activity.Current?.ParentId);
-        _ = (Activity.Current?.AddTag("mq", "NATS"))
-            .AddTag("handler", "DepositProcessor");
+        logger.LogInformation("Nats ParentId:{ParentId}", Activity.Current?.ParentId);        
 
         var settings = JsonSerializer.Deserialize<S88PayDepositSettings>(
             data.ApplyInfo,
