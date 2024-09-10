@@ -28,11 +28,11 @@ internal class DepositProcessor(
         logger.LogInformation("Current TraceId:{currentTraceId}", Activity.Current?.TraceId.ToString());
         logger.LogInformation("Current SpanId:{currentSpanId}", Activity.Current?.SpanId.ToString());
 
-        using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity("InternalHandlerSession");
+        //using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity("InternalHandlerSession");//new
         if (headerValues is not null)
         {
-            logger.LogInformation("activity TraceId:{activityTraceId}", activity?.TraceId);
-            logger.LogInformation("activity SpanId:{activitySpanId}", activity?.SpanId);
+            //logger.LogInformation("activity TraceId:{activityTraceId}", activity?.TraceId);
+            //logger.LogInformation("activity SpanId:{activitySpanId}", activity?.SpanId);
 
             var traceId = headerValues!.First(x => x.Name == "traceId").Value;
             var spanId = headerValues!.First(x => x.Name == "spanId").Value;
@@ -41,9 +41,10 @@ internal class DepositProcessor(
             var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
             var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());
 
-            _ = (activity?.SetParentId(activityTraceId, activitySpanId));
-            _ = (activity?.SetTag("mq", "NATS"));
-            _ = activity?.SetTag("handler", "DepositProcessor");
+            //_ = (activity?.SetParentId(activityTraceId, activitySpanId));
+            //_ = (activity?.SetTag("mq", "NATS"));
+            //_ = activity?.SetTag("handler", "DepositProcessor");
+            _ = Activity.Current?.SetParentId(activityTraceId, activitySpanId);
         }
 
         //if (Activity.Current?.ParentId is not null)
