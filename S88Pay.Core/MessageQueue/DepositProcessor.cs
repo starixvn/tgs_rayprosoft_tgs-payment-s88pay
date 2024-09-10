@@ -22,14 +22,20 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
+        logger.LogInformation("Activity.Current:{current}", Activity.Current);
         if (headerValues is not null)
         {
-            var traceId = ActivityTraceId.CreateFromString(headerValues!.First(x => x.Name == "traceId").Value.AsSpan());
-            var spanId = ActivitySpanId.CreateFromString(headerValues!.First(x => x.Name == "spanId").Value.AsSpan());
-            _ = Activity.Current?.SetParentId(traceId, spanId);
+            var traceId = headerValues!.First(x => x.Name == "traceId").Value;
+            var spanId = headerValues!.First(x => x.Name == "spanId").Value;
+            logger.LogInformation("From Nats header, traceId:{traceId}, spanId:{spanId}", traceId, spanId);
+
+            var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
+            var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());            
+
+            _ = Activity.Current?.SetParentId(activityTraceId, activitySpanId);
             _ = Activity.Current?.SetTag("mq", "NATS");
             _ = Activity.Current?.SetTag("handler", "DepositProcessor");
-            logger.LogInformation("activity start");
+            logger.LogInformation("Activity.Current:{current}", Activity.Current);
         }
 
         //if (Activity.Current?.ParentId is not null)
