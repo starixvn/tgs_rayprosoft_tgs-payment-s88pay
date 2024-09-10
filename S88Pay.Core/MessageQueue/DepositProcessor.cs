@@ -23,12 +23,17 @@ internal class DepositProcessor(
         CancellationToken cancellationToken = default)
     {
         using var activity = new Activity("InternalHandlerSession");
-        if (headerValues is not null)
+        //if (headerValues is not null)
+        //{
+        //    var traceId = ActivityTraceId.CreateFromString(headerValues!.First(x => x.Name == "traceId").Value.AsSpan());
+        //    var spanId = ActivitySpanId.CreateFromString(headerValues!.First(x => x.Name == "spanId").Value.AsSpan());
+        //    _ = (activity?.SetParentId(traceId, spanId, ActivityTraceFlags.Recorded));
+        //    _ = activity?.Start();
+        //}
+        if (Activity.Current?.ParentId is not null)
         {
-            var traceId = ActivityTraceId.CreateFromString(headerValues!.First(x => x.Name == "traceId").Value.AsSpan());
-            var spanId = ActivitySpanId.CreateFromString(headerValues!.First(x => x.Name == "spanId").Value.AsSpan());
-            _ = (activity?.SetParentId(traceId, spanId, ActivityTraceFlags.Recorded));
-            _ = activity?.Start();
+            _ = activity.SetParentId(Activity.Current?.ParentId!);
+            _ = activity.Start();
             logger.LogInformation("activity start");
         }
 
@@ -66,7 +71,7 @@ internal class DepositProcessor(
                 settings.Type,
                 depositResponse.BankName));
 
-        activity?.Stop();
+        activity.Stop();
 
         return new DepositResponse
         {
