@@ -44,10 +44,8 @@ internal class DepositProcessor(
             //_ = (activity?.SetParentId(activityTraceId, activitySpanId));
             //_ = (activity?.SetTag("mq", "NATS"));
             //_ = activity?.SetTag("handler", "DepositProcessor");
-            Activity.Current?.Stop();
+            _ = (Activity.Current?.Parent?.SetParentId(activityTraceId, activitySpanId));
             _ = (Activity.Current?.SetParentId(activityTraceId, activitySpanId));
-            _ = (Activity.Current?.Start());
-            logger.LogInformation("Current Start()");
         }
 
         //if (Activity.Current?.ParentId is not null)
