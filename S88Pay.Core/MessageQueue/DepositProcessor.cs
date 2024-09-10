@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.Payment.Protos;
@@ -22,14 +21,17 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Current Parent TraceId:{parentTraceId}", Activity.Current?.Parent?.TraceId.ToString());
-        logger.LogInformation("Current Parent SpanId:{parentSpanId}", Activity.Current?.Parent?.SpanId.ToString());
+        //logger.LogInformation("Current Parent TraceId:{parentTraceId}", Activity.Current?.Parent?.TraceId.ToString());
+        //logger.LogInformation("Current Parent SpanId:{parentSpanId}", Activity.Current?.Parent?.SpanId.ToString());
 
-        logger.LogInformation("Current TraceId:{currentTraceId}", Activity.Current?.TraceId.ToString());
-        logger.LogInformation("Current SpanId:{currentSpanId}", Activity.Current?.SpanId.ToString());
+        //logger.LogInformation("Current TraceId:{currentTraceId}", Activity.Current?.TraceId.ToString());
+        //logger.LogInformation("Current SpanId:{currentSpanId}", Activity.Current?.SpanId.ToString());
 
-        using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity(subject, ActivityKind.Server);
-        logger.LogInformation("New Activity TraceId:{traceId}, SpanId:{spanId}", activity?.TraceId.ToString(), activity?.SpanId.ToString());
+        //using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity(subject, ActivityKind.Server);//not use 會在原本的底下再建
+        //_ = (activity?.SetParentId(activityTraceId, activitySpanId));
+        //_ = (activity?.SetTag("mq", "NATS"));
+        //_ = activity?.SetTag("handler", "DepositProcessor");
+        //logger.LogInformation("New Activity TraceId:{traceId}, SpanId:{spanId}", activity?.TraceId.ToString(), activity?.SpanId.ToString());
         if (headerValues is not null)
         {
             //logger.LogInformation("activity TraceId:{activityTraceId}", activity?.TraceId);
@@ -39,12 +41,8 @@ internal class DepositProcessor(
             var spanId = headerValues!.First(x => x.Name == "spanId").Value;
             logger.LogInformation("From Nats TraceId:{traceId}, SpanId:{spanId}", traceId, spanId);
 
-            var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
-            var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());
-
-            _ = (activity?.SetParentId(activityTraceId, activitySpanId));
-            _ = (activity?.SetTag("mq", "NATS"));
-            _ = activity?.SetTag("handler", "DepositProcessor");
+            //var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
+            //var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());
 
             //_ = (Activity.Current?.Parent?.SetParentId(activityTraceId, activitySpanId));//not use
             //_ = (Activity.Current?.SetParentId(activityTraceId, activitySpanId));//not use
