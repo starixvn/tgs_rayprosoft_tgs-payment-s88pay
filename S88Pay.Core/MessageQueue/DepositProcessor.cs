@@ -22,16 +22,18 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        using (var activity = new Activity("InternalHandlerSession"))
+        using (var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity("InternalHandlerSession"))
         {
             if (headerValues is not null)
             {
                 var traceId = ActivityTraceId.CreateFromString(headerValues!.First(x => x.Name == "traceId").Value.AsSpan());
                 var spanId = ActivitySpanId.CreateFromString(headerValues!.First(x => x.Name == "spanId").Value.AsSpan());
-                _ = activity.SetParentId(traceId, spanId);
-                _ = activity.Start();
+                _ = activity?.SetParentId(traceId, spanId);
+                _ = activity?.SetTag("mq", "NATS");
+                _ = activity?.SetTag("handler", "DepositProcessor");
                 logger.LogInformation("activity start");
             }
+
             //if (Activity.Current?.ParentId is not null)
             //{
             //    _ = activity.SetParentId(Activity.Current?.ParentId!);
@@ -73,11 +75,10 @@ internal class DepositProcessor(
                     settings.Type,
                     depositResponse.BankName));
 
-
+            return new DepositResponse
+            {
+                Result = JsonSerializer.Serialize(applyInfo, S88PayUtility.SerializerOptions)
+            };
         }
-        return new DepositResponse
-        {
-            Result = JsonSerializer.Serialize(applyInfo, S88PayUtility.SerializerOptions)
-        };
     }
 }
