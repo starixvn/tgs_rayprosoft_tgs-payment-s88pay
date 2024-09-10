@@ -22,20 +22,28 @@ internal class DepositProcessor(
         IEnumerable<MessageHeaderValue>? headerValues,
         CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Activity.Current:{current}", Activity.Current);
+        logger.LogInformation("Current Parent TraceId:{parentTraceId}", Activity.Current?.Parent?.TraceId.ToString());
+        logger.LogInformation("Current Parent SpanId:{parentSpanId}", Activity.Current?.Parent?.SpanId.ToString());
+
+        logger.LogInformation("Current TraceId:{currentTraceId}", Activity.Current?.TraceId.ToString());
+        logger.LogInformation("Current SpanId:{currentSpanId}", Activity.Current?.SpanId.ToString());
+
+        using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity("InternalHandlerSession");
         if (headerValues is not null)
         {
+            logger.LogInformation("activity TraceId:{activityTraceId}", activity?.TraceId);
+            logger.LogInformation("activity SpanId:{activitySpanId}", activity?.SpanId);
+
             var traceId = headerValues!.First(x => x.Name == "traceId").Value;
             var spanId = headerValues!.First(x => x.Name == "spanId").Value;
-            logger.LogInformation("From Nats header, traceId:{traceId}, spanId:{spanId}", traceId, spanId);
+            logger.LogInformation("From Nats TraceId:{traceId}, SpanId:{spanId}", traceId, spanId);
 
             var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
-            var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());            
+            var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());
 
-            _ = Activity.Current?.SetParentId(activityTraceId, activitySpanId);
-            _ = Activity.Current?.SetTag("mq", "NATS");
-            _ = Activity.Current?.SetTag("handler", "DepositProcessor");
-            logger.LogInformation("Activity.Current:{current}", Activity.Current);
+            _ = (activity?.SetParentId(activityTraceId, activitySpanId));
+            _ = (activity?.SetTag("mq", "NATS"));
+            _ = activity?.SetTag("handler", "DepositProcessor");
         }
 
         //if (Activity.Current?.ParentId is not null)
