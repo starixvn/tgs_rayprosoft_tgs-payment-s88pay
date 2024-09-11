@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.Payment.Protos;
@@ -26,12 +27,7 @@ internal class DepositProcessor(
 
         //logger.LogInformation("Current TraceId:{currentTraceId}", Activity.Current?.TraceId.ToString());
         //logger.LogInformation("Current SpanId:{currentSpanId}", Activity.Current?.SpanId.ToString());
-
-        //using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity(subject, ActivityKind.Server);//not use 會在原本的底下再建
-        //_ = (activity?.SetParentId(activityTraceId, activitySpanId));
-        //_ = (activity?.SetTag("mq", "NATS"));
-        //_ = activity?.SetTag("handler", "DepositProcessor");
-        //logger.LogInformation("New Activity TraceId:{traceId}, SpanId:{spanId}", activity?.TraceId.ToString(), activity?.SpanId.ToString());
+        ActivityContext parent;
         if (headerValues is not null)
         {
             //logger.LogInformation("activity TraceId:{activityTraceId}", activity?.TraceId);
@@ -41,12 +37,23 @@ internal class DepositProcessor(
             var spanId = headerValues!.First(x => x.Name == "spanId").Value;
             logger.LogInformation("From Nats TraceId:{traceId}, SpanId:{spanId}", traceId, spanId);
 
-            //var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
-            //var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());
+            var activityTraceId = ActivityTraceId.CreateFromString(traceId.AsSpan());
+            var activitySpanId = ActivitySpanId.CreateFromString(spanId.AsSpan());
 
             //_ = (Activity.Current?.Parent?.SetParentId(activityTraceId, activitySpanId));//not use
             //_ = (Activity.Current?.SetParentId(activityTraceId, activitySpanId));//not use
+            parent = new ActivityContext(activityTraceId, activitySpanId, ActivityTraceFlags.None, null, true);
         }
+        using var activity = new ActivitySource("Valhalla.MessageQueue.Nats").StartActivity(subject, ActivityKind.Server, parent);//not use 會在原本的底下再建
+
+        //TODO:試著生出parentContext綁定看看
+        //parentContext => ActivityContext.Parse(traceParent,traceState)
+        //Activity.Current.TraceStateString
+
+        //_ = (activity?.SetParentId(activityTraceId, activitySpanId));
+        //_ = (activity?.SetTag("mq", "NATS"));
+        //_ = activity?.SetTag("handler", "DepositProcessor");
+        //logger.LogInformation("New Activity TraceId:{traceId}, SpanId:{spanId}", activity?.TraceId.ToString(), activity?.SpanId.ToString());
 
         //if (Activity.Current?.ParentId is not null)
         //{
